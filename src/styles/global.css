@@ -1,0 +1,30 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body */
+body {
+  background-color: #0B0F19;
+  color: #F9FAFB;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FACC15;
+  border-radius: 10px;
+}
+
+/* Utility */
+.card {
+  background: #1F2937;
+  border-radius: 12px;
+  padding: 16px;
+}
