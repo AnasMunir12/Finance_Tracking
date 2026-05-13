@@ -1,65 +1,89 @@
 "use client";
 
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, Flex } from "@chakra-ui/react";
 import Card from "./Card";
+import { TableSkeleton } from "./LoadingSkeletons";
+import { useColorModeValue } from "./color-mode";
 
-const data = [
-    { title: "Salary", type: "Income", amount: 50000, date: "2026-05-01" },
-    { title: "Rent", type: "Expense", amount: 15000, date: "2026-05-02" },
-    { title: "Freelance", type: "Income", amount: 20000, date: "2026-05-03" },
-];
+export default function TransactionTable({ transactions, isLoading }) {
+    if (isLoading && !transactions) return <TableSkeleton />;
 
-export default function TransactionTable() {
     return (
         <Card>
 
-            <Text fontSize="lg" mb={4} fontWeight="bold">
-                Recent Transactions
-            </Text>
+            <Flex justify="space-between" align="center" mb={4}>
+                <Text fontSize="lg" fontWeight="bold" color="mainText">
+                    Recent Transactions
+                </Text>
+                <Text fontSize="sm" color="mutedText">
+                    Latest {transactions?.length || 0} activities
+                </Text>
+            </Flex>
 
             <Box overflowX="auto">
 
                 <table style={{
                     width: "100%",
                     borderCollapse: "collapse",
-                    color: "white"
+                    color: "inherit",
+                    minWidth: "600px"
                 }}>
 
                     <thead>
-                        <tr style={{ textAlign: "left", borderBottom: "1px solid #374151" }}>
-                            <th style={{ padding: "10px" }}>Title</th>
-                            <th style={{ padding: "10px" }}>Type</th>
-                            <th style={{ padding: "10px" }}>Amount</th>
-                            <th style={{ padding: "10px" }}>Date</th>
+                        <tr style={{ textAlign: "left", borderBottom: `1px solid ${useColorModeValue("#E5E7EB", "#374151")}` }}>
+                            <th style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Title</th>
+                            <th style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Category</th>
+                            <th style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Wallet</th>
+                            <th style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Amount</th>
+                            <th style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Date</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {data.map((item, i) => (
-                            <tr
-                                key={i}
-                                style={{
-                                    borderBottom: "1px solid #1F2937"
-                                }}
-                            >
-                                <td style={{ padding: "10px" }}>{item.title}</td>
-
-                                <td style={{
-                                    padding: "10px",
-                                    color: item.type === "Income" ? "#22C55E" : "#EF4444"
-                                }}>
-                                    {item.type}
-                                </td>
-
-                                <td style={{ padding: "10px" }}>
-                                    Rs. {item.amount}
-                                </td>
-
-                                <td style={{ padding: "10px", color: "#9CA3AF" }}>
-                                    {item.date}
+                        {transactions?.length === 0 ? (
+                            <tr>
+                                <td colSpan="5" style={{ padding: "40px", textAlign: "center", color: "#6B7280" }}>
+                                    No recent transactions found.
                                 </td>
                             </tr>
-                        ))}
+                        ) : (
+                            transactions?.map((item) => (
+                                <tr
+                                    key={item._id}
+                                    style={{
+                                        borderBottom: `1px solid ${useColorModeValue("#F3F4F6", "#1F2937")}`,
+                                        transition: "background 0.2s"
+                                    }}
+                                >
+                                    <td style={{ padding: "12px" }}>
+                                        <Text fontWeight="semibold" color="mainText">{item.title}</Text>
+                                    </td>
+
+                                    <td style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF") }}>
+                                        {item.category || "Other"}
+                                    </td>
+
+                                    <td style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), textTransform: "capitalize" }}>
+                                        {item.wallet}
+                                    </td>
+
+                                    <td style={{
+                                        padding: "12px",
+                                        fontWeight: "bold",
+                                        color: item.type === "income" ? "#22C55E" : "#EF4444"
+                                    }}>
+                                        {item.type === "income" ? "+" : "-"} Rs. {item.amount?.toLocaleString()}
+                                    </td>
+
+                                    <td style={{ padding: "12px", color: useColorModeValue("#6B7280", "#9CA3AF") }}>
+                                        {new Date(item.date).toLocaleDateString("en-PK", { 
+                                            day: "2-digit", 
+                                            month: "short" 
+                                        })}
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
 
                 </table>
@@ -68,4 +92,4 @@ export default function TransactionTable() {
 
         </Card>
     );
-}
+}

@@ -8,7 +8,7 @@ export default function AdminLayout({ children }) {
     const disclosure = useDisclosure();
 
     return (
-        <Flex minH="100vh" bg="#0B0F19">
+        <Flex minH="100vh" bg="appBg">
 
             {/* Sidebar */}
             <Sidebar

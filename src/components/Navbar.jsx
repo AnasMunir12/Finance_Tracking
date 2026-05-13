@@ -8,6 +8,7 @@ import {
     Box,
 } from "@chakra-ui/react";
 import { FiMenu, FiSearch } from "react-icons/fi";
+import { ColorModeButton } from "./ui/color-mode";
 
 export default function Navbar({ onOpen, isOpen }) {
     console.log("IsOpen:", isOpen);
@@ -18,8 +19,9 @@ export default function Navbar({ onOpen, isOpen }) {
             py={4}
             align="center"
             justify="space-between"
-            bg="#111827"
-            borderBottom="1px solid #1F2937"
+            bg="cardBg"
+            borderBottom="1px solid"
+            borderColor="mainBorder"
             position="sticky"
             top="0"
             zIndex="500"
@@ -31,13 +33,13 @@ export default function Navbar({ onOpen, isOpen }) {
                     display={{ base: "flex", lg: "none" }}
                     onClick={onOpen}
                     variant="ghost"
-                    color="white"
-                    _hover={{ bg: "#1F2937" }}
+                    color="mainText"
+                    _hover={{ bg: "subtleBg" }}
                 >
                     <FiMenu size={20} />
                 </IconButton>
 
-                <Text fontWeight="bold" fontSize="lg" color="white">
+                <Text fontWeight="bold" fontSize="lg" color="mainText">
                     Dashboard
                 </Text>
             </Flex>
@@ -46,35 +48,38 @@ export default function Navbar({ onOpen, isOpen }) {
             <Box
                 display={{ base: "none", md: "flex" }}
                 alignItems="center"
-                bg="#1F2937"
+                bg="subtleBg"
                 px={3}
                 borderRadius="10px"
                 w="300px"
             >
-                <FiSearch color="#9CA3AF" />
+                <FiSearch color="mutedText" />
                 <Input
                     placeholder="Search..."
                     border="none"
                     _focus={{ boxShadow: "none" }}
                     ml={2}
-                    color="white"
+                    color="mainText"
                 />
             </Box>
 
-            {/* Avatar */}
-            <Box
-                w="35px"
-                h="35px"
-                borderRadius="50%"
-                bg="#FACC15"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                fontWeight="bold"
-                color="black"
-            >
-                U
-            </Box>
+            {/* Avatar & Theme Toggle */}
+            <Flex align="center" gap={3}>
+                <ColorModeButton />
+                <Box
+                    w="35px"
+                    h="35px"
+                    borderRadius="50%"
+                    bg="#FACC15"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    fontWeight="bold"
+                    color="black"
+                >
+                    U
+                </Box>
+            </Flex>
         </Flex>
     );
 }

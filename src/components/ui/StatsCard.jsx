@@ -19,7 +19,7 @@ export default function StatsCard({
     return (
         <Card>
             <Flex justify="space-between" align="center" mb={3}>
-                <Text color="gray.400" fontSize="sm">
+                <Text color="mutedText" fontSize="sm" fontWeight="medium">
                     {title}
                 </Text>
                 <Flex
@@ -33,7 +33,7 @@ export default function StatsCard({
                 </Flex>
             </Flex>
 
-            <Text fontSize="2xl" fontWeight="bold" mb={2}>
+            <Text fontSize="2xl" fontWeight="bold" mb={2} color="mainText">
                 {displayValue}
             </Text>
 

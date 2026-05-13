@@ -2,18 +2,20 @@
 
 import { Flex, Input } from "@chakra-ui/react";
 import { FiSearch } from "react-icons/fi";
+import { useColorModeValue } from "../../components/ui/color-mode";
 
 const SelectInput = ({ options, placeholder, value, onChange }) => (
     <select
         style={{
-            background: "#1F2937",
-            color: "white",
-            border: "none",
+            background: useColorModeValue("#F3F4F6", "#1F2937"),
+            color: useColorModeValue("#111827", "white"),
+            border: `1px solid ${useColorModeValue("#E5E7EB", "#374151")}`,
             padding: "10px 16px",
             borderRadius: "10px",
             outline: "none",
             minWidth: "140px",
             height: "40px",
+            fontSize: "14px"
         }}
         value={value}
         onChange={onChange}
@@ -45,19 +47,22 @@ export default function TransactionsFilter({
                 {/* Search */}
                 <Flex
                     alignItems="center"
-                    bg="#1F2937"
+                    bg="subtleBg"
                     px={3}
                     borderRadius="10px"
                     w={{ base: "100%", md: "250px" }}
                     h="40px"
+                    border="1px solid"
+                    borderColor="mainBorder"
                 >
-                    <FiSearch color="#9CA3AF" />
+                    <FiSearch color="mutedText" />
                     <Input
                         placeholder="Search by title..."
                         border="none"
                         _focus={{ boxShadow: "none" }}
                         ml={2}
-                        color="white"
+                        color="mainText"
+                        _placeholder={{ color: "dimText" }}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />

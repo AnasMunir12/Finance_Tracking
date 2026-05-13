@@ -7,40 +7,47 @@ import {
     FiTrendingUp,
     FiTrendingDown,
 } from "react-icons/fi";
+import { StatsSkeleton } from "../../components/ui/LoadingSkeletons";
 
-export default function StatsCards() {
+export default function StatsCards({ stats, isLoading }) {
+    if (isLoading && !stats) return <StatsSkeleton />;
+
     return (
         <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6}>
             <StatsCard
                 title="Total Balance"
-                amount="45,680"
+                amount={stats?.balance?.toLocaleString() || "0"}
                 icon={FiDollarSign}
                 color="#FACC15"
-                change={12.5}
+                change={0}
+                trend="Current available balance"
             />
 
             <StatsCard
                 title="You Will Receive"
-                amount="18,540"
+                amount={stats?.receivable?.toLocaleString() || "0"}
                 icon={FiTrendingUp}
                 color="#22C55E"
-                change={8.3}
+                change={0}
+                trend="Pending receivables"
             />
 
             <StatsCard
                 title="You Will Pay"
-                amount="7,860"
+                amount={stats?.payable?.toLocaleString() || "0"}
                 icon={FiTrendingDown}
                 color="#EF4444"
-                change={-4.2}
+                change={0}
+                trend="Pending payables"
             />
 
             <StatsCard
                 title="Net Balance"
-                amount="56,360"
+                amount={stats?.netBalance?.toLocaleString() || "0"}
                 icon={FiDollarSign}
                 color="#6366F1"
-                change={10.1}
+                change={0}
+                trend="Balance after all settlements"
             />
         </SimpleGrid>
     );

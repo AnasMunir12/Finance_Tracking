@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import { Box, Flex, Text, Button, Skeleton, IconButton } from "@chakra-ui/react";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import Card from "../../components/ui/Card";
+import { useColorModeValue } from "../../components/ui/color-mode";
 
 export default function TransactionsTable({ data = [], isLoading = false, onEdit, onDelete }) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
-    // Reset to page 1 whenever the data changes (e.g. from filtering)
     useEffect(() => {
         setCurrentPage(1);
     }, [data]);
@@ -30,26 +30,25 @@ export default function TransactionsTable({ data = [], isLoading = false, onEdit
                 <table style={{
                     width: "100%",
                     borderCollapse: "collapse",
-                    color: "white",
+                    color: "inherit",
                     whiteSpace: "nowrap"
                 }}>
                     <thead>
-                        <tr style={{ textAlign: "left", borderBottom: "1px solid #374151" }}>
-                            <th style={{ padding: "12px 10px", color: "#9CA3AF", fontWeight: "normal" }}>Title</th>
-                            <th style={{ padding: "12px 10px", color: "#9CA3AF", fontWeight: "normal" }}>Type</th>
-                            <th style={{ padding: "12px 10px", color: "#9CA3AF", fontWeight: "normal" }}>Category</th>
-                            <th style={{ padding: "12px 10px", color: "#9CA3AF", fontWeight: "normal" }}>Wallet</th>
-                            <th style={{ padding: "12px 10px", color: "#9CA3AF", fontWeight: "normal" }}>Date</th>
-                            <th style={{ padding: "12px 10px", color: "#9CA3AF", fontWeight: "normal" }}>Status</th>
-                            <th style={{ padding: "12px 10px", color: "#9CA3AF", fontWeight: "normal", textAlign: "right" }}>Amount</th>
-                            <th style={{ padding: "12px 10px", color: "#9CA3AF", fontWeight: "normal", textAlign: "center" }}>Actions</th>
+                        <tr style={{ textAlign: "left", borderBottom: `1px solid ${useColorModeValue("#E5E7EB", "#374151")}` }}>
+                            <th style={{ padding: "12px 10px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontWeight: "600", fontSize: "13px", textTransform: "uppercase" }}>Title</th>
+                            <th style={{ padding: "12px 10px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontWeight: "600", fontSize: "13px", textTransform: "uppercase" }}>Type</th>
+                            <th style={{ padding: "12px 10px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontWeight: "600", fontSize: "13px", textTransform: "uppercase" }}>Category</th>
+                            <th style={{ padding: "12px 10px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontWeight: "600", fontSize: "13px", textTransform: "uppercase" }}>Wallet</th>
+                            <th style={{ padding: "12px 10px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontWeight: "600", fontSize: "13px", textTransform: "uppercase" }}>Date</th>
+                            <th style={{ padding: "12px 10px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontWeight: "600", fontSize: "13px", textTransform: "uppercase" }}>Status</th>
+                            <th style={{ padding: "12px 10px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontWeight: "600", fontSize: "13px", textTransform: "uppercase", textAlign: "right" }}>Amount</th>
+                            <th style={{ padding: "12px 10px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontWeight: "600", fontSize: "13px", textTransform: "uppercase", textAlign: "center" }}>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {isLoading ? (
-                            // Render 5 Skeleton Rows
                             [...Array(5)].map((_, idx) => (
-                                <tr key={`skeleton-${idx}`} style={{ borderBottom: "1px solid #1F2937" }}>
+                                <tr key={`skeleton-${idx}`} style={{ borderBottom: `1px solid ${useColorModeValue("#F3F4F6", "#1F2937")}` }}>
                                     <td style={{ padding: "12px 10px" }}><Skeleton height="20px" w="120px" /></td>
                                     <td style={{ padding: "12px 10px" }}><Skeleton height="20px" w="80px" /></td>
                                     <td style={{ padding: "12px 10px" }}><Skeleton height="20px" w="80px" /></td>
@@ -67,19 +66,19 @@ export default function TransactionsTable({ data = [], isLoading = false, onEdit
                             ))
                         ) : paginatedData.length === 0 ? (
                             <tr>
-                                <td colSpan="8" style={{ padding: "30px", textAlign: "center", color: "#9CA3AF" }}>
+                                <td colSpan="8" style={{ padding: "30px", textAlign: "center", color: "mutedText" }}>
                                     No transactions found.
                                 </td>
                             </tr>
                         ) : paginatedData.map((item) => (
-                            <tr key={item._id || item.id} style={{ borderBottom: "1px solid #1F2937" }}>
-                                <td style={{ padding: "12px 10px" }}>{item.title}</td>
+                            <tr key={item._id || item.id} style={{ borderBottom: `1px solid ${useColorModeValue("#F3F4F6", "#1F2937")}` }}>
+                                <td style={{ padding: "12px 10px", color: "mainText", fontWeight: "500" }}>{item.title}</td>
                                 <td style={{ padding: "12px 10px", color: item.type?.toLowerCase() === "income" ? "#22C55E" : (item.type?.toLowerCase() === "expense" ? "#EF4444" : "#6366F1"), textTransform: "capitalize" }}>
                                     {item.type}
                                 </td>
-                                <td style={{ padding: "12px 10px" }}>{item.category}</td>
-                                <td style={{ padding: "12px 10px", textTransform: "capitalize" }}>{item.wallet}</td>
-                                <td style={{ padding: "12px 10px", color: "#9CA3AF" }}>{new Date(item.date).toLocaleDateString()}</td>
+                                <td style={{ padding: "12px 10px", color: "mutedText" }}>{item.category}</td>
+                                <td style={{ padding: "12px 10px", textTransform: "capitalize", color: "mutedText" }}>{item.wallet}</td>
+                                <td style={{ padding: "12px 10px", color: "mutedText" }}>{new Date(item.date).toLocaleDateString()}</td>
                                 <td style={{ padding: "12px 10px" }}>
                                     <Box
                                         as="span"
@@ -94,37 +93,31 @@ export default function TransactionsTable({ data = [], isLoading = false, onEdit
                                         {item.status || "paid"}
                                     </Box>
                                 </td>
-                                <td style={{ padding: "12px 10px", textAlign: "right", fontWeight: "bold" }}>
+                                <td style={{ padding: "12px 10px", textAlign: "right", fontWeight: "bold", color: "mainText" }}>
                                     Rs. {parseFloat(item.amount).toLocaleString()}
                                 </td>
                                 <td style={{ padding: "12px 10px" }}>
                                     <Flex gap={2} justify="center">
-                                        <Button
+                                        <IconButton
                                             size="sm"
-                                            bg="rgba(99, 102, 241, 0.1)"
-                                            color="#818CF8"
-                                            _hover={{ bg: "rgba(99, 102, 241, 0.2)" }}
+                                            variant="ghost"
+                                            color="mainText"
+                                            _hover={{ bg: "subtleBg" }}
                                             onClick={() => onEdit && onEdit(item)}
-                                            p={0}
-                                            w="32px"
-                                            h="32px"
-                                            minW="auto"
+                                            aria-label="Edit"
                                         >
-                                            <FiEdit2 />
-                                        </Button>
-                                        <Button
+                                            <FiEdit2 size={14} />
+                                        </IconButton>
+                                        <IconButton
                                             size="sm"
-                                            bg="rgba(239, 68, 68, 0.1)"
-                                            color="#EF4444"
-                                            _hover={{ bg: "rgba(239, 68, 68, 0.2)" }}
+                                            variant="ghost"
+                                            color="red.400"
+                                            _hover={{ bg: "red.500", color: "white" }}
                                             onClick={() => onDelete && onDelete(item._id || item.id)}
-                                            p={0}
-                                            w="32px"
-                                            h="32px"
-                                            minW="auto"
+                                            aria-label="Delete"
                                         >
-                                            <FiTrash2 />
-                                        </Button>
+                                            <FiTrash2 size={14} />
+                                        </IconButton>
                                     </Flex>
                                 </td>
                             </tr>
@@ -135,17 +128,18 @@ export default function TransactionsTable({ data = [], isLoading = false, onEdit
 
             {/* Pagination UI */}
             {!isLoading && totalPages > 1 && (
-                <Flex justify="space-between" align="center" mt={4} pt={4} borderTop="1px solid #1F2937" flexWrap="wrap" gap={4}>
-                    <Text fontSize="sm" color="gray.400">
+                <Flex justify="space-between" align="center" mt={4} pt={4} borderTop="1px solid" borderColor="mainBorder" flexWrap="wrap" gap={4}>
+                    <Text fontSize="sm" color="mutedText">
                         Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, data.length)} of {data.length} entries
                     </Text>
                     <Flex gap={2}>
                         <Button 
                             size="sm" 
-                            bg="#111827" 
-                            color="white" 
-                            _hover={{ bg: "#374151" }} 
-                            border="1px solid #374151"
+                            variant="outline"
+                            borderColor="mainBorder"
+                            bg="cardBg"
+                            color="mainText"
+                            _hover={{ bg: "subtleBg" }}
                             onClick={() => handlePageChange(currentPage - 1)}
                             isDisabled={currentPage === 1}
                         >
@@ -159,10 +153,11 @@ export default function TransactionsTable({ data = [], isLoading = false, onEdit
                                 <Button 
                                     key={pageNumber} 
                                     size="sm" 
-                                    bg={isActive ? "#FACC15" : "#111827"} 
-                                    color={isActive ? "black" : "white"} 
-                                    _hover={{ bg: isActive ? "#EAB308" : "#374151" }} 
-                                    border={isActive ? "none" : "1px solid #374151"}
+                                    bg={isActive ? "#FACC15" : "cardBg"} 
+                                    color={isActive ? "black" : "mainText"} 
+                                    _hover={{ bg: isActive ? "#EAB308" : "subtleBg" }} 
+                                    border="1px solid"
+                                    borderColor={isActive ? "brand.500" : "mainBorder"}
                                     onClick={() => handlePageChange(pageNumber)}
                                 >
                                     {pageNumber}
@@ -172,10 +167,11 @@ export default function TransactionsTable({ data = [], isLoading = false, onEdit
                         
                         <Button 
                             size="sm" 
-                            bg="#111827" 
-                            color="white" 
-                            _hover={{ bg: "#374151" }} 
-                            border="1px solid #374151"
+                            variant="outline"
+                            borderColor="mainBorder"
+                            bg="cardBg"
+                            color="mainText"
+                            _hover={{ bg: "subtleBg" }}
                             onClick={() => handlePageChange(currentPage + 1)}
                             isDisabled={currentPage === totalPages}
                         >

@@ -15,6 +15,7 @@ import {
 } from "react-icons/fi";
 import StatsCard from "../../components/ui/StatsCard";
 import Card from "../../components/ui/Card";
+import { useColorModeValue } from "../../components/ui/color-mode";
 
 /* ─────────────────────────────────────────────
    Confirmation Dialog (inline, no extra lib)
@@ -28,21 +29,21 @@ function ConfirmDialog({ isOpen, title, message, confirmLabel, onConfirm, onCanc
             display="flex" alignItems="center" justifyContent="center"
         >
             <Box
-                bg="#111827" borderRadius="14px" p={6} w="90%" maxW="380px"
-                border="1px solid #374151"
+                bg="cardBg" borderRadius="14px" p={6} w="90%" maxW="380px"
+                border="1px solid" borderColor="mainBorder"
                 boxShadow="0 20px 60px rgba(0,0,0,0.5)"
             >
                 <Flex align="center" gap={3} mb={3}>
                     <Box color={danger ? "#EF4444" : "#FACC15"} fontSize="22px">
                         <FiAlertTriangle />
                     </Box>
-                    <Text fontWeight="bold" fontSize="lg" color="white">{title}</Text>
+                    <Text fontWeight="bold" fontSize="lg" color="mainText">{title}</Text>
                 </Flex>
-                <Text color="#9CA3AF" fontSize="sm" mb={6}>{message}</Text>
+                <Text color="mutedText" fontSize="sm" mb={6}>{message}</Text>
                 <Flex justify="flex-end" gap={3}>
                     <Button
-                        size="sm" variant="ghost" color="white"
-                        _hover={{ bg: "#1F2937" }} onClick={onCancel}
+                        size="sm" variant="ghost" color="mainText"
+                        _hover={{ bg: "subtleBg" }} onClick={onCancel}
                     >
                         Cancel
                     </Button>
@@ -90,10 +91,11 @@ function AddEntryModal({ isOpen, onClose, onSubmit, isPayable, labels, isSubmitt
     if (!isOpen) return null;
 
     const inputStyle = (touched, error) => ({
-        bg: "#0D1520",
-        border: touched && error ? "1px solid #EF4444" : "1px solid #374151",
-        color: "white",
-        _placeholder: { color: "#6B7280" },
+        bg: "subtleBg",
+        border: touched && error ? "1px solid #EF4444" : "1px solid",
+        borderColor: touched && error ? "#EF4444" : "mainBorder",
+        color: "mainText",
+        _placeholder: { color: "dimText" },
         _focus: { borderColor: isPayable ? "#EF4444" : "#22C55E", boxShadow: "none" },
     });
 
@@ -104,13 +106,13 @@ function AddEntryModal({ isOpen, onClose, onSubmit, isPayable, labels, isSubmitt
             display="flex" alignItems="center" justifyContent="center"
         >
             <Box
-                bg="#111827" borderRadius="16px" p={7} w="90%" maxW="480px"
-                border="1px solid #1F2937"
+                bg="cardBg" borderRadius="16px" p={7} w="90%" maxW="480px"
+                border="1px solid" borderColor="mainBorder"
                 boxShadow="0 25px 80px rgba(0,0,0,0.6)"
             >
                 <Flex justify="space-between" align="center" mb={6}>
-                    <Text fontSize="xl" fontWeight="bold" color="white">{labels.addBtn}</Text>
-                    <Button size="sm" variant="ghost" color="#9CA3AF" _hover={{ color: "white", bg: "#1F2937" }} onClick={onClose}>
+                    <Text fontSize="xl" fontWeight="bold" color="mainText">{labels.addBtn}</Text>
+                    <Button size="sm" variant="ghost" color="mutedText" _hover={{ color: "mainText", bg: "subtleBg" }} onClick={onClose}>
                         <FiX />
                     </Button>
                 </Flex>
@@ -119,7 +121,7 @@ function AddEntryModal({ isOpen, onClose, onSubmit, isPayable, labels, isSubmitt
                     <Flex direction="column" gap={4}>
                         {/* Title */}
                         <Box>
-                            <Text mb={1} fontSize="sm" color="#9CA3AF">Title / Name</Text>
+                            <Text mb={1} fontSize="sm" color="mutedText">Title / Name</Text>
                             <Input
                                 name="title"
                                 placeholder="e.g. Ahmed Khan"
@@ -135,7 +137,7 @@ function AddEntryModal({ isOpen, onClose, onSubmit, isPayable, labels, isSubmitt
 
                         {/* Amount */}
                         <Box>
-                            <Text mb={1} fontSize="sm" color="#9CA3AF">Amount (Rs.)</Text>
+                            <Text mb={1} fontSize="sm" color="mutedText">Amount (Rs.)</Text>
                             <Input
                                 name="amount" type="number" min="0" placeholder="0"
                                 {...inputStyle(formik.touched.amount, formik.errors.amount)}
@@ -150,14 +152,14 @@ function AddEntryModal({ isOpen, onClose, onSubmit, isPayable, labels, isSubmitt
 
                         {/* Date */}
                         <Box>
-                            <Text mb={1} fontSize="sm" color="#9CA3AF">Date</Text>
+                            <Text mb={1} fontSize="sm" color="mutedText">Date</Text>
                             <Input
                                 name="date" type="date"
                                 {...inputStyle(formik.touched.date, formik.errors.date)}
                                 value={formik.values.date}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                css={{ colorScheme: "dark" }}
+                                css={{ colorScheme: useColorModeValue("light", "dark") }}
                             />
                             {formik.touched.date && formik.errors.date && (
                                 <Text color="#EF4444" fontSize="xs" mt={1}>{formik.errors.date}</Text>
@@ -166,12 +168,12 @@ function AddEntryModal({ isOpen, onClose, onSubmit, isPayable, labels, isSubmitt
 
                         {/* Note */}
                         <Box>
-                            <Text mb={1} fontSize="sm" color="#9CA3AF">Note <Text as="span" color="#6B7280">(optional)</Text></Text>
+                            <Text mb={1} fontSize="sm" color="mutedText">Note <Text as="span" color="dimText">(optional)</Text></Text>
                             <Input
                                 name="note" placeholder="Optional note..."
-                                bg="#0D1520" border="1px solid #374151" color="white"
-                                _placeholder={{ color: "#6B7280" }}
-                                _focus={{ borderColor: "#374151", boxShadow: "none" }}
+                                bg="subtleBg" border="1px solid" borderColor="mainBorder" color="mainText"
+                                _placeholder={{ color: "dimText" }}
+                                _focus={{ borderColor: "mainBorder", boxShadow: "none" }}
                                 value={formik.values.note}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
@@ -180,15 +182,15 @@ function AddEntryModal({ isOpen, onClose, onSubmit, isPayable, labels, isSubmitt
 
                         {/* Status */}
                         <Box>
-                            <Text mb={1} fontSize="sm" color="#9CA3AF">Status</Text>
+                            <Text mb={1} fontSize="sm" color="mutedText">Status</Text>
                             <select
                                 name="status"
                                 value={formik.values.status}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 style={{
-                                    width: "100%", background: "#0D1520", color: "white",
-                                    border: "1px solid #374151", padding: "10px 12px",
+                                    width: "100%", background: useColorModeValue("#F3F4F6", "#0D1520"), color: useColorModeValue("#111827", "#FFFFFF"),
+                                    border: `1px solid ${useColorModeValue("#E5E7EB", "#374151")}`, padding: "10px 12px",
                                     borderRadius: "8px", outline: "none", fontSize: "14px"
                                 }}
                             >
@@ -199,7 +201,7 @@ function AddEntryModal({ isOpen, onClose, onSubmit, isPayable, labels, isSubmitt
 
                         <Flex justify="flex-end" gap={3} mt={2}>
                             <Button
-                                variant="ghost" color="white" _hover={{ bg: "#1F2937" }}
+                                variant="ghost" color="mainText" _hover={{ bg: "subtleBg" }}
                                 onClick={onClose} isDisabled={isSubmitting}
                             >
                                 Cancel
@@ -247,8 +249,11 @@ export default function LedgerModule({ type }) {
             title: title,
             showConfirmButton: false,
             timer: 2000,
-            background: "#111827",
-            color: "#fff",
+            background: useColorModeValue("#fff", "#111827"),
+            color: useColorModeValue("#111827", "#fff"),
+            didOpen: () => {
+                Swal.getContainer().style.zIndex = "2000";
+            }
         });
     };
 
@@ -304,6 +309,7 @@ export default function LedgerModule({ type }) {
             showToast("Entry added");
             setIsModalOpen(false);
             fetchData();
+            window.dispatchEvent(new Event("refreshDashboard"));
         } catch (err) {
             showToast(err.message, "error");
         } finally {
@@ -337,6 +343,7 @@ export default function LedgerModule({ type }) {
             if (!res.ok) throw new Error("Failed to update status");
             showToast(`Marked as ${labels.completedStatus}`);
             fetchData();
+            window.dispatchEvent(new Event("refreshDashboard"));
         } catch (err) {
             showToast(err.message, "error");
         }
@@ -354,18 +361,43 @@ export default function LedgerModule({ type }) {
             },
             inputPlaceholder: 'Choose wallet...',
             showCancelButton: true,
-            background: "#111827",
-            color: "#fff",
+            background: useColorModeValue("#fff", "#111827"),
+            color: useColorModeValue("#111827", "#fff"),
             confirmButtonColor: labels.accentColor,
-            cancelButtonColor: "#374151",
+            cancelButtonColor: useColorModeValue("#E5E7EB", "#374151"),
             customClass: {
-                popup: 'rounded-2xl border border-gray-700 shadow-2xl',
-                input: 'bg-gray-900 text-white border-gray-700'
+                popup: `rounded-2xl border ${useColorModeValue("border-gray-200", "border-gray-700")} shadow-2xl`,
+                input: `${useColorModeValue("bg-gray-50 text-gray-900", "bg-gray-900 text-white")} border-gray-700`
+            },
+            didOpen: () => {
+                Swal.getContainer().style.zIndex = "2000";
             }
         });
 
         if (wallet) {
             try {
+                // ✅ BALANCE VALIDATION (for Payables)
+                if (isPayable) {
+                    const statsRes = await fetch("/api/wallet");
+                    const stats = await statsRes.json();
+                    const currentBalance = wallet === "cash" ? stats.cash : stats.online;
+
+                    if (item.amount > currentBalance) {
+                        Swal.fire({
+                            title: "Insufficient Balance!",
+                            text: `You only have Rs. ${currentBalance.toLocaleString()} in your ${wallet} wallet. Cannot complete this payment.`,
+                            icon: "warning",
+                            background: useColorModeValue("#fff", "#111827"),
+                            color: useColorModeValue("#111827", "#fff"),
+                            confirmButtonColor: labels.accentColor,
+                            didOpen: () => {
+                                Swal.getContainer().style.zIndex = "2000";
+                            }
+                        });
+                        return;
+                    }
+                }
+
                 // 1. Create Transaction
                 const tRes = await fetch("/api/transaction", {
                     method: "POST",
@@ -410,6 +442,7 @@ export default function LedgerModule({ type }) {
 
                 showToast("Added Transaction");
                 fetchData();
+                window.dispatchEvent(new Event("refreshDashboard"));
             } catch (err) {
                 console.error("Conversion error:", err);
                 showToast(err.message || "Failed to add transaction", "error");
@@ -436,6 +469,7 @@ export default function LedgerModule({ type }) {
             if (!res.ok) throw new Error("Failed to delete");
             showToast("Entry deleted", "info");
             fetchData();
+            window.dispatchEvent(new Event("refreshDashboard"));
         } catch (err) {
             showToast(err.message, "error");
         }
@@ -468,8 +502,8 @@ export default function LedgerModule({ type }) {
             {/* Header */}
             <Flex justify="space-between" align="center" mb={6} flexWrap="wrap" gap={4}>
                 <Box>
-                    <Text fontSize="2xl" fontWeight="bold" color="white">{labels.title}</Text>
-                    <Text fontSize="sm" color="#6B7280" mt={0.5}>{labels.subtitle}</Text>
+                    <Text fontSize="2xl" fontWeight="bold" color="mainText">{labels.title}</Text>
+                    <Text fontSize="sm" color="mutedText" mt={0.5}>{labels.subtitle}</Text>
                 </Box>
                 <Button
                     bg={labels.accentColor}
@@ -511,29 +545,29 @@ export default function LedgerModule({ type }) {
             <Flex gap={4} mb={6} flexWrap="wrap" alignItems="center" justify="space-between">
                 <Flex gap={4} align="center" flexWrap="wrap">
                     <Flex
-                        alignItems="center" bg="#1F2937" px={3} borderRadius="10px"
+                        alignItems="center" bg="subtleBg" px={3} borderRadius="10px"
                         w={{ base: "100%", md: "280px" }} h="40px"
-                        border="1px solid #374151"
+                        border="1px solid" borderColor="mainBorder"
                     >
-                        <FiSearch color="#9CA3AF" />
+                        <FiSearch color="mutedText" />
                         <Input
                             placeholder="Search by title..."
                             border="none" _focus={{ boxShadow: "none" }} ml={2}
-                            color="white" _placeholder={{ color: "#6B7280" }}
+                            color="mainText" _placeholder={{ color: "dimText" }}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </Flex>
                     
                     {/* View Toggle Tabs */}
-                    <Flex bg="#111827" p={1} borderRadius="12px" border="1px solid #1F2937">
+                    <Flex bg="cardBg" p={1} borderRadius="12px" border="1px solid" borderColor="mainBorder">
                         <Button
                             size="sm"
                             variant="ghost"
                             borderRadius="10px"
-                            bg={activeTab === "pending" ? "#1F2937" : "transparent"}
-                            color={activeTab === "pending" ? "white" : "#6B7280"}
-                            _hover={{ bg: "#1F2937", color: "white" }}
+                            bg={activeTab === "pending" ? "subtleBg" : "transparent"}
+                            color={activeTab === "pending" ? "mainText" : "mutedText"}
+                            _hover={{ bg: "subtleBg", color: "mainText" }}
                             onClick={() => setActiveTab("pending")}
                             px={5}
                         >
@@ -543,9 +577,9 @@ export default function LedgerModule({ type }) {
                             size="sm"
                             variant="ghost"
                             borderRadius="10px"
-                            bg={activeTab === "history" ? "#1F2937" : "transparent"}
-                            color={activeTab === "history" ? "white" : "#6B7280"}
-                            _hover={{ bg: "#1F2937", color: "white" }}
+                            bg={activeTab === "history" ? "subtleBg" : "transparent"}
+                            color={activeTab === "history" ? "mainText" : "mutedText"}
+                            _hover={{ bg: "subtleBg", color: "mainText" }}
                             onClick={() => setActiveTab("history")}
                             px={5}
                         >
@@ -554,8 +588,8 @@ export default function LedgerModule({ type }) {
                     </Flex>
                 </Flex>
 
-                <Text fontSize="sm" color="#6B7280">
-                    Showing <Text as="span" color="white" fontWeight="semibold">{filteredEntries.length}</Text> {activeTab} {type}(s)
+                <Text fontSize="sm" color="mutedText">
+                    Showing <Text as="span" color="mainText" fontWeight="semibold">{filteredEntries.length}</Text> {activeTab} {type}(s)
                 </Text>
             </Flex>
 
@@ -568,15 +602,15 @@ export default function LedgerModule({ type }) {
                             <Text color="#9CA3AF">Loading entries...</Text>
                         </Flex>
                     ) : (
-                        <table style={{ width: "100%", borderCollapse: "collapse", color: "white", whiteSpace: "nowrap" }}>
+                        <table style={{ width: "100%", borderCollapse: "collapse", color: "inherit", whiteSpace: "nowrap" }}>
                             <thead>
-                                <tr style={{ textAlign: "left", borderBottom: "1px solid #1F2937" }}>
+                                <tr style={{ textAlign: "left", borderBottom: `1px solid ${useColorModeValue("#E5E7EB", "#1F2937")}` }}>
                                     {["Title", "Amount", "Date", "Note", "Status", "Actions"].map((col) => (
                                         <th
                                             key={col}
                                             style={{
-                                                padding: "12px 14px", color: "#6B7280",
-                                                fontWeight: "500", fontSize: "12px",
+                                                padding: "12px 14px", color: useColorModeValue("#6B7280", "#9CA3AF"),
+                                                fontWeight: "600", fontSize: "12px",
                                                 textTransform: "uppercase", letterSpacing: "0.05em",
                                                 textAlign: col === "Actions" ? "right" : "left",
                                             }}
@@ -604,19 +638,19 @@ export default function LedgerModule({ type }) {
                                 ) : filteredEntries.map((item) => (
                                     <tr
                                         key={item._id}
-                                        style={{ borderBottom: "1px solid #111827", transition: "background 0.15s" }}
-                                        onMouseEnter={e => e.currentTarget.style.background = "#0D1520"}
+                                        style={{ borderBottom: `1px solid ${useColorModeValue("#F9FAFB", "#111827")}`, transition: "background 0.15s" }}
+                                        onMouseEnter={e => e.currentTarget.style.background = useColorModeValue("#F3F4F6", "#0D1520")}
                                         onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                                     >
-                                        <td style={{ padding: "14px 14px", fontWeight: "600" }}>{item.title}</td>
+                                        <td style={{ padding: "14px 14px", fontWeight: "600", color: useColorModeValue("#111827", "#FFFFFF") }}>{item.title}</td>
                                         <td style={{ padding: "14px 14px", color: labels.accentColor, fontWeight: "700", fontVariantNumeric: "tabular-nums" }}>
                                             Rs. {item.amount.toLocaleString()}
                                         </td>
-                                        <td style={{ padding: "14px 14px", color: "#9CA3AF", fontSize: "14px" }}>
+                                        <td style={{ padding: "14px 14px", color: "mutedText", fontSize: "14px" }}>
                                             {formatDate(item.date)}
                                         </td>
-                                        <td style={{ padding: "14px 14px", color: "#6B7280", fontSize: "14px", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis" }}>
-                                            {item.note || <Text as="span" color="#374151">—</Text>}
+                                        <td style={{ padding: "14px 14px", color: "mutedText", fontSize: "14px", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                            {item.note || <Text as="span" color="dimText">—</Text>}
                                         </td>
                                         <td style={{ padding: "14px 14px" }}>
                                             <Box
