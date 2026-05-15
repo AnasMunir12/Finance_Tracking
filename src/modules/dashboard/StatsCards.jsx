@@ -6,6 +6,7 @@ import {
     FiDollarSign,
     FiTrendingUp,
     FiTrendingDown,
+    FiBriefcase,
 } from "react-icons/fi";
 import { StatsSkeleton } from "../../components/ui/LoadingSkeletons";
 
@@ -16,38 +17,38 @@ export default function StatsCards({ stats, isLoading }) {
         <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} gap={6}>
             <StatsCard
                 title="Total Balance"
-                amount={stats?.balance?.toLocaleString() || "0"}
+                amount={stats?.balance || 0}
                 icon={FiDollarSign}
-                color="#FACC15"
-                change={0}
-                trend="Current available balance"
+                color="accent.500"
+                change={12}
+                isPositive={true}
             />
 
             <StatsCard
                 title="You Will Receive"
-                amount={stats?.receivable?.toLocaleString() || "0"}
+                amount={stats?.receivable || 0}
                 icon={FiTrendingUp}
-                color="#22C55E"
-                change={0}
-                trend="Pending receivables"
+                color="green.500"
+                change={5}
+                isPositive={true}
             />
 
             <StatsCard
                 title="You Will Pay"
-                amount={stats?.payable?.toLocaleString() || "0"}
+                amount={stats?.payable || 0}
                 icon={FiTrendingDown}
-                color="#EF4444"
-                change={0}
-                trend="Pending payables"
+                color="red.500"
+                change={-2}
+                isPositive={false}
             />
 
             <StatsCard
                 title="Net Balance"
-                amount={stats?.netBalance?.toLocaleString() || "0"}
-                icon={FiDollarSign}
-                color="#6366F1"
-                change={0}
-                trend="Balance after all settlements"
+                amount={stats?.netBalance || 0}
+                icon={FiBriefcase}
+                color="primary"
+                change={8}
+                isPositive={true}
             />
         </SimpleGrid>
     );

@@ -6,15 +6,16 @@ export default function Card({ children, ...props }) {
     return (
         <Box
             bg="cardBg"
-            p={5}
+            p={{ base: 4, md: 6 }}
             borderRadius="lg"
             border="1px solid"
             borderColor="mainBorder"
-            boxShadow="sm"
-            transition="all 0.3s"
+            boxShadow="soft"
+            transition="all 0.2s ease-in-out"
+            position="relative"
+            overflow="hidden"
             _hover={{
-                transform: "translateY(-4px)",
-                boxShadow: "md",
+                boxShadow: "premium",
             }}
             {...props}
         >

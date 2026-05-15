@@ -1,11 +1,19 @@
 "use client";
-export default function Button({ children, onClick, className }) {
+
+import { Button as ChakraButton } from "@chakra-ui/react";
+
+export default function Button({ children, ...props }) {
     return (
-        <button
-            onClick={onClick}
-            className={`px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 ${className}`}
+        <ChakraButton
+            borderRadius="md"
+            fontWeight="600"
+            px={6}
+            h="10"
+            transition="all 0.2s"
+            _active={{ transform: "scale(0.98)" }}
+            {...props}
         >
             {children}
-        </button>
+        </ChakraButton>
     );
 }

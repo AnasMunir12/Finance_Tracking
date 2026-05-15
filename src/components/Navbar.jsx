@@ -3,23 +3,23 @@
 import {
     Flex,
     Text,
-    Input,
     IconButton,
     Box,
 } from "@chakra-ui/react";
-import { FiMenu, FiSearch } from "react-icons/fi";
+import { FiMenu, FiSearch, FiBell } from "react-icons/fi";
 import { ColorModeButton } from "./ui/color-mode";
+import Input from "./ui/Input";
 
-export default function Navbar({ onOpen, isOpen }) {
-    console.log("IsOpen:", isOpen);
-
+export default function Navbar({ onOpen }) {
     return (
         <Flex
-            px={6}
+            px={{ base: 4, lg: 8 }}
             py={4}
             align="center"
             justify="space-between"
-            bg="cardBg"
+            bg="rgba(255, 255, 255, 0.8)"
+            _dark={{ bg: "rgba(15, 23, 42, 0.8)" }}
+            backdropFilter="blur(12px)"
             borderBottom="1px solid"
             borderColor="mainBorder"
             position="sticky"
@@ -36,49 +36,75 @@ export default function Navbar({ onOpen, isOpen }) {
                     color="mainText"
                     _hover={{ bg: "subtleBg" }}
                 >
-                    <FiMenu size={20} />
+                    <FiMenu size={22} />
                 </IconButton>
 
-                <Text fontWeight="bold" fontSize="lg" color="mainText">
-                    Dashboard
-                </Text>
+                <Box display={{ base: "none", md: "block" }}>
+                    <Text fontWeight="800" fontSize="lg" color="mainText">
+                        Overview
+                    </Text>
+                    <Text fontSize="xs" color="mutedText" fontWeight="500">
+                        Welcome back, User!
+                    </Text>
+                </Box>
             </Flex>
 
-            {/* Search */}
-            <Box
-                display={{ base: "none", md: "flex" }}
-                alignItems="center"
-                bg="subtleBg"
-                px={3}
-                borderRadius="10px"
-                w="300px"
-            >
-                <FiSearch color="mutedText" />
-                <Input
-                    placeholder="Search..."
-                    border="none"
-                    _focus={{ boxShadow: "none" }}
-                    ml={2}
-                    color="mainText"
-                />
-            </Box>
-
-            {/* Avatar & Theme Toggle */}
-            <Flex align="center" gap={3}>
-                <ColorModeButton />
+            {/* Right */}
+            <Flex align="center" gap={4}>
                 <Box
-                    w="35px"
-                    h="35px"
-                    borderRadius="50%"
-                    bg="#FACC15"
-                    display="flex"
+                    display={{ base: "none", md: "flex" }}
                     alignItems="center"
-                    justifyContent="center"
-                    fontWeight="bold"
-                    color="black"
+                    w="300px"
+                    position="relative"
                 >
-                    U
+                    <Box position="absolute" left="3" zIndex="1" color="mutedText">
+                        <FiSearch size={16} />
+                    </Box>
+                    <Input
+                        placeholder="Search transactions..."
+                        pl="10"
+                        bg="subtleBg"
+                        border="none"
+                        h="10"
+                        fontSize="sm"
+                    />
                 </Box>
+
+                <Flex align="center" gap={2}>
+                    <IconButton
+                        aria-label="Notifications"
+                        variant="ghost"
+                        color="mutedText"
+                        _hover={{ bg: "subtleBg", color: "mainText" }}
+                    >
+                        <FiBell size={18} />
+                    </IconButton>
+                    
+                    <ColorModeButton />
+                    
+                    <Box h="8" w="1px" bg="mainBorder" mx={1} />
+                    
+                    <Flex align="center" gap={3} cursor="pointer" p={1} borderRadius="lg" _hover={{ bg: "subtleBg" }} transition="all 0.2s">
+                        <Box
+                            w="32px"
+                            h="32px"
+                            borderRadius="lg"
+                            bg="primary"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            fontWeight="bold"
+                            color="white"
+                            fontSize="sm"
+                        >
+                            U
+                        </Box>
+                        <Box display={{ base: "none", sm: "block" }}>
+                            <Text fontSize="xs" fontWeight="700" color="mainText">Anas Munir</Text>
+                            <Text fontSize="10px" color="mutedText" fontWeight="500">Admin</Text>
+                        </Box>
+                    </Flex>
+                </Flex>
             </Flex>
         </Flex>
     );

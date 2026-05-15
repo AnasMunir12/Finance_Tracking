@@ -1,95 +1,105 @@
 "use client";
 
-import { Box, Text, Flex } from "@chakra-ui/react";
+import { Box, Text, Flex, Table, Badge, IconButton } from "@chakra-ui/react";
 import Card from "./Card";
 import { TableSkeleton } from "./LoadingSkeletons";
-import { useColorModeValue } from "./color-mode";
+import { FiArrowUpRight, FiArrowDownLeft, FiMoreVertical } from "react-icons/fi";
 
 export default function TransactionTable({ transactions, isLoading }) {
     if (isLoading && !transactions) return <TableSkeleton />;
 
     return (
-        <Card>
-
-            <Flex justify="space-between" align="center" mb={4}>
-                <Text fontSize="lg" fontWeight="bold" color="mainText">
-                    Recent Transactions
-                </Text>
-                <Text fontSize="sm" color="mutedText">
-                    Latest {transactions?.length || 0} activities
-                </Text>
+        <Card p={0}>
+            <Flex justify="space-between" align="center" p={6} borderBottom="1px solid" borderColor="mainBorder">
+                <Box>
+                    <Text fontSize="lg" fontWeight="bold" color="mainText">
+                        Recent Transactions
+                    </Text>
+                    <Text fontSize="xs" color="mutedText" fontWeight="500">
+                        A list of your latest financial activities
+                    </Text>
+                </Box>
             </Flex>
 
             <Box overflowX="auto">
+                <Table.Root variant="ghost" size="md">
+                    <Table.Header>
+                        <Table.Row bg="subtleBg" _dark={{ bg: "whiteAlpha.50" }}>
+                            <Table.ColumnHeader color="mutedText" fontSize="xs" fontWeight="700" textTransform="uppercase" py={4}>Title</Table.ColumnHeader>
+                            <Table.ColumnHeader color="mutedText" fontSize="xs" fontWeight="700" textTransform="uppercase" py={4}>Category</Table.ColumnHeader>
+                            <Table.ColumnHeader color="mutedText" fontSize="xs" fontWeight="700" textTransform="uppercase" py={4}>Wallet</Table.ColumnHeader>
+                            <Table.ColumnHeader color="mutedText" fontSize="xs" fontWeight="700" textTransform="uppercase" py={4}>Amount</Table.ColumnHeader>
+                            <Table.ColumnHeader color="mutedText" fontSize="xs" fontWeight="700" textTransform="uppercase" py={4}>Date</Table.ColumnHeader>
+                        </Table.Row>
+                    </Table.Header>
 
-                <table style={{
-                    width: "100%",
-                    borderCollapse: "collapse",
-                    color: "inherit",
-                    minWidth: "600px"
-                }}>
-
-                    <thead>
-                        <tr style={{ textAlign: "left", borderBottom: `1px solid ${useColorModeValue("#E5E7EB", "#374151")}` }}>
-                            <th style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Title</th>
-                            <th style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Category</th>
-                            <th style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Wallet</th>
-                            <th style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Amount</th>
-                            <th style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), fontSize: "12px", fontWeight: "600", textTransform: "uppercase" }}>Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
+                    <Table.Body>
                         {transactions?.length === 0 ? (
-                            <tr>
-                                <td colSpan="5" style={{ padding: "40px", textAlign: "center", color: "#6B7280" }}>
+                            <Table.Row>
+                                <Table.Cell colSpan={5} textAlign="center" py={12} color="dimText" fontSize="sm">
                                     No recent transactions found.
-                                </td>
-                            </tr>
+                                </Table.Cell>
+                            </Table.Row>
                         ) : (
                             transactions?.map((item) => (
-                                <tr
-                                    key={item._id}
-                                    style={{
-                                        borderBottom: `1px solid ${useColorModeValue("#F3F4F6", "#1F2937")}`,
-                                        transition: "background 0.2s"
-                                    }}
+                                <Table.Row 
+                                    key={item._id} 
+                                    _hover={{ bg: "subtleBg" }} 
+                                    transition="background 0.2s"
+                                    cursor="pointer"
                                 >
-                                    <td style={{ padding: "12px" }}>
-                                        <Text fontWeight="semibold" color="mainText">{item.title}</Text>
-                                    </td>
+                                    <Table.Cell py={4}>
+                                        <Flex align="center" gap={3}>
+                                            <Box 
+                                                p={2} 
+                                                borderRadius="full" 
+                                                bg={item.type === "income" ? "green.50" : "red.50"}
+                                                _dark={{ bg: item.type === "income" ? "green.950" : "red.950" }}
+                                                color={item.type === "income" ? "green.500" : "red.500"}
+                                            >
+                                                {item.type === "income" ? <FiArrowUpRight size={14} /> : <FiArrowDownLeft size={14} />}
+                                            </Box>
+                                            <Text fontWeight="600" color="mainText" fontSize="sm">{item.title}</Text>
+                                        </Flex>
+                                    </Table.Cell>
 
-                                    <td style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF") }}>
-                                        {item.category || "Other"}
-                                    </td>
+                                    <Table.Cell py={4}>
+                                        <Badge variant="subtle" colorPalette="gray" borderRadius="md" textTransform="capitalize">
+                                            {item.category || "Other"}
+                                        </Badge>
+                                    </Table.Cell>
 
-                                    <td style={{ padding: "12px", color: useColorModeValue("#4B5563", "#9CA3AF"), textTransform: "capitalize" }}>
-                                        {item.wallet}
-                                    </td>
+                                    <Table.Cell py={4}>
+                                        <Text color="mutedText" fontSize="sm" fontWeight="500" textTransform="capitalize">
+                                            {item.wallet}
+                                        </Text>
+                                    </Table.Cell>
 
-                                    <td style={{
-                                        padding: "12px",
-                                        fontWeight: "bold",
-                                        color: item.type === "income" ? "#22C55E" : "#EF4444"
-                                    }}>
-                                        {item.type === "income" ? "+" : "-"} Rs. {item.amount?.toLocaleString()}
-                                    </td>
+                                    <Table.Cell py={4}>
+                                        <Text
+                                            fontWeight="800"
+                                            fontSize="sm"
+                                            color={item.type === "income" ? "green.500" : "red.500"}
+                                        >
+                                            {item.type === "income" ? "+" : "-"} Rs. {item.amount?.toLocaleString()}
+                                        </Text>
+                                    </Table.Cell>
 
-                                    <td style={{ padding: "12px", color: useColorModeValue("#6B7280", "#9CA3AF") }}>
-                                        {new Date(item.date).toLocaleDateString("en-PK", { 
-                                            day: "2-digit", 
-                                            month: "short" 
-                                        })}
-                                    </td>
-                                </tr>
+                                    <Table.Cell py={4}>
+                                        <Text color="dimText" fontSize="xs" fontWeight="500">
+                                            {new Date(item.date).toLocaleDateString("en-PK", {
+                                                day: "2-digit",
+                                                month: "short",
+                                                year: "numeric"
+                                            })}
+                                        </Text>
+                                    </Table.Cell>
+                                </Table.Row>
                             ))
                         )}
-                    </tbody>
-
-                </table>
-
+                    </Table.Body>
+                </Table.Root>
             </Box>
-
         </Card>
     );
 }
