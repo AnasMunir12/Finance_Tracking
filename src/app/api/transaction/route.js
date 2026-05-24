@@ -1,11 +1,18 @@
 import { connectDB } from "../../../lib/db";
 import Transaction from "../../../models/Transaction";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../../lib/auth";
 
 // ✅ GET (with filters + search + pagination + date + status)
 export async function GET(req) {
     try {
         await connectDB();
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const { searchParams } = new URL(req.url);
 
         const type = searchParams.get("type");
@@ -19,7 +26,7 @@ export async function GET(req) {
         const page = parseInt(searchParams.get("page")) || 1;
         const limit = parseInt(searchParams.get("limit")) || 10;
 
-        let query = {};
+        let query = { userId: session.user.id };
 
         if (type) query.type = { $regex: new RegExp(`^${type}$`, "i") };
         if (category) query.category = { $regex: new RegExp(`^${category}$`, "i") };
@@ -69,13 +76,18 @@ export async function GET(req) {
 export async function POST(req) {
     try {
         await connectDB();
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const body = await req.json();
         console.log("POST /api/transaction body:", JSON.stringify(body, null, 2));
 
         // Validate required fields manually (allowing 0 for amount)
         if (!body.title || body.amount === undefined || body.amount === null || !body.type) {
-            return NextResponse.json({ 
-                error: "Missing required fields: title, amount, and type are required." 
+            return NextResponse.json({
+                error: "Missing required fields: title, amount, and type are required."
             }, { status: 400 });
         }
 
@@ -83,6 +95,7 @@ export async function POST(req) {
         if (walletValue === "bank") walletValue = "online";
 
         const transactionData = {
+            userId: session.user.id,
             title: body.title,
             amount: parseFloat(body.amount),
             type: body.type.toLowerCase(),
@@ -101,7 +114,7 @@ export async function POST(req) {
 
     } catch (err) {
         console.error("POST /api/transaction ERROR:", err);
-        return NextResponse.json({ 
+        return NextResponse.json({
             error: err.message,
             details: err.errors ? Object.keys(err.errors).map(key => err.errors[key].message) : null
         }, { status: 500 });
@@ -112,6 +125,11 @@ export async function POST(req) {
 export async function DELETE(req) {
     try {
         await connectDB();
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
 
@@ -119,7 +137,10 @@ export async function DELETE(req) {
             return NextResponse.json({ error: "ID required" }, { status: 400 });
         }
 
-        await Transaction.findByIdAndDelete(id);
+        const deleted = await Transaction.findOneAndDelete({ _id: id, userId: session.user.id });
+        if (!deleted) {
+            return NextResponse.json({ error: "Transaction not found or unauthorized" }, { status: 404 });
+        }
         return NextResponse.json({ message: "Deleted successfully" });
 
     } catch (err) {
@@ -131,6 +152,11 @@ export async function DELETE(req) {
 export async function PUT(req) {
     try {
         await connectDB();
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const body = await req.json();
         const { id, ...updateData } = body;
 
@@ -138,8 +164,8 @@ export async function PUT(req) {
             return NextResponse.json({ error: "ID required" }, { status: 400 });
         }
 
-        const updated = await Transaction.findByIdAndUpdate(
-            id,
+        const updated = await Transaction.findOneAndUpdate(
+            { _id: id, userId: session.user.id },
             {
                 ...updateData,
                 type: updateData.type?.toLowerCase(),

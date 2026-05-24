@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 
 const transactionSchema = new mongoose.Schema(
     {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+
         title: {
             type: String,
             required: true,
@@ -55,6 +61,10 @@ const transactionSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+if (process.env.NODE_ENV !== "production") {
+    delete mongoose.models.Transaction;
+}
 
 export default mongoose.models.Transaction ||
     mongoose.model("Transaction", transactionSchema);

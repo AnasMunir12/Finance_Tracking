@@ -2,13 +2,25 @@ import { connectDB } from "../../../lib/db";
 import Transaction from "../../../models/Transaction";
 import Ledger from "../../../models/Ledger";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../../lib/auth";
+import mongoose from "mongoose";
 
 export async function GET() {
     try {
         await connectDB();
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const userObjectId = new mongoose.Types.ObjectId(session.user.id);
 
         // 1. Fetch Wallet Stats (Income, Expense, Balance, Cash, Online)
         const walletStats = await Transaction.aggregate([
+            {
+                $match: { userId: userObjectId }
+            },
             {
                 $group: {
                     _id: null,
@@ -95,6 +107,9 @@ export async function GET() {
         // 2. Fetch Ledger Stats (Payable, Receivable)
         const ledgerStats = await Ledger.aggregate([
             {
+                $match: { userId: userObjectId }
+            },
+            {
                 $group: {
                     _id: null,
                     totalPayable: {
@@ -128,18 +143,19 @@ export async function GET() {
 
         const ledgerResult = ledgerStats[0] || { payable: 0, receivable: 0 };
 
-        // 3. Recent Transactions
-        const recentTransactions = await Transaction.find()
+        // 3. Recent Transactions (user-scoped)
+        const recentTransactions = await Transaction.find({ userId: session.user.id })
             .sort({ date: -1 })
             .limit(5);
 
-        // 4. Monthly Data (Chart)
+        // 4. Monthly Data (Chart) (user-scoped)
         const fiveMonthsAgo = new Date();
         fiveMonthsAgo.setMonth(fiveMonthsAgo.getMonth() - 5);
 
         const chartStats = await Transaction.aggregate([
             {
                 $match: {
+                    userId: userObjectId,
                     date: { $gte: fiveMonthsAgo }
                 }
             },

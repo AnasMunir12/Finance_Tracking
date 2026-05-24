@@ -27,6 +27,11 @@ export default function Transactions() {
     const [sortBy, setSortBy] = useState("latest");
     const [walletStats, setWalletStats] = useState({ cash: 0, online: 0 });
 
+    // Swal theme constants for nested callbacks
+    const swalBg = useColorModeValue("#fff", "#111827");
+    const swalColor = useColorModeValue("#111827", "#fff");
+    const swalCancelBtnColor = useColorModeValue("#E5E7EB", "#374151");
+
     useEffect(() => {
         fetchTransactions();
         fetchWalletStats();
@@ -61,10 +66,10 @@ export default function Transactions() {
             text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
-            background: useColorModeValue("#fff", "#111827"),
-            color: useColorModeValue("#111827", "#fff"),
+            background: swalBg,
+            color: swalColor,
             confirmButtonColor: "#EF4444",
-            cancelButtonColor: useColorModeValue("#E5E7EB", "#374151"),
+            cancelButtonColor: swalCancelBtnColor,
             confirmButtonText: "Yes, delete it!",
             didOpen: () => {
                 Swal.getContainer().style.zIndex = "2000";
@@ -81,8 +86,8 @@ export default function Transactions() {
                             title: "Cannot Delete!",
                             text: `Deleting this income would result in a negative balance in your ${transactionToDelete.wallet} wallet.`,
                             icon: "error",
-                            background: useColorModeValue("#fff", "#111827"),
-                            color: useColorModeValue("#111827", "#fff"),
+                            background: swalBg,
+                            color: swalColor,
                             confirmButtonColor: "#FACC15",
                             didOpen: () => {
                                 Swal.getContainer().style.zIndex = "2000";
@@ -98,8 +103,8 @@ export default function Transactions() {
                         title: "Deleted!",
                         text: "Transaction has been deleted.",
                         icon: "success",
-                        background: useColorModeValue("#fff", "#111827"),
-                        color: useColorModeValue("#111827", "#fff"),
+                        background: swalBg,
+                        color: swalColor,
                         confirmButtonColor: "#FACC15",
                         didOpen: () => {
                             Swal.getContainer().style.zIndex = "2000";
@@ -116,8 +121,8 @@ export default function Transactions() {
                     title: "Error!",
                     text: "Something went wrong.",
                     icon: "error",
-                    background: useColorModeValue("#fff", "#111827"),
-                    color: useColorModeValue("#111827", "#fff"),
+                    background: swalBg,
+                    color: swalColor,
                     confirmButtonColor: "#FACC15",
                     didOpen: () => {
                         Swal.getContainer().style.zIndex = "2000";
@@ -196,8 +201,8 @@ export default function Transactions() {
                             title: "Insufficient Balance!",
                             text: `This change would result in a negative balance. Available in ${bodyData.wallet}: Rs. ${validationBalance.toLocaleString()}`,
                             icon: "warning",
-                            background: useColorModeValue("#fff", "#111827"),
-                            color: useColorModeValue("#111827", "#fff"),
+                            background: swalBg,
+                            color: swalColor,
                             confirmButtonColor: "#FACC15",
                             didOpen: () => {
                                 Swal.getContainer().style.zIndex = "2000";
@@ -205,14 +210,14 @@ export default function Transactions() {
                         });
                         return;
                     }
-                    
+
                     if (editingId && bodyData.type === "income" && validationBalance + bodyData.amount < 0) {
-                         Swal.fire({
+                        Swal.fire({
                             title: "Cannot Update!",
                             text: `Reducing this income would result in a negative balance in your ${bodyData.wallet} wallet.`,
                             icon: "error",
-                            background: useColorModeValue("#fff", "#111827"),
-                            color: useColorModeValue("#111827", "#fff"),
+                            background: swalBg,
+                            color: swalColor,
                             confirmButtonColor: "#FACC15",
                             didOpen: () => {
                                 Swal.getContainer().style.zIndex = "2000";
@@ -239,8 +244,8 @@ export default function Transactions() {
                     title: editingId ? 'Transaction updated successfully' : 'Transaction added successfully',
                     showConfirmButton: false,
                     timer: 3000,
-                    background: useColorModeValue("#fff", "#111827"),
-                    color: useColorModeValue("#111827", "#fff"),
+                    background: swalBg,
+                    color: swalColor,
                     didOpen: () => {
                         Swal.getContainer().style.zIndex = "2000";
                     }
@@ -259,8 +264,8 @@ export default function Transactions() {
                     title: 'Failed to save transaction',
                     showConfirmButton: false,
                     timer: 3000,
-                    background: useColorModeValue("#fff", "#111827"),
-                    color: useColorModeValue("#111827", "#fff"),
+                    background: swalBg,
+                    color: swalColor,
                     didOpen: () => {
                         Swal.getContainer().style.zIndex = "2000";
                     }

@@ -1,11 +1,17 @@
 import { connectDB } from "../../../lib/db";
 import Ledger from "../../../models/Ledger";
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../../lib/auth";
 
 // ✅ GET (with filters + search + pagination)
 export async function GET(req) {
     try {
         await connectDB();
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
 
         const { searchParams } = new URL(req.url);
         const type = searchParams.get("type");
@@ -14,7 +20,7 @@ export async function GET(req) {
         const page = parseInt(searchParams.get("page")) || 1;
         const limit = parseInt(searchParams.get("limit")) || 200;
 
-        let query = {};
+        let query = { userId: session.user.id };
         if (type) query.type = type;
         if (status) query.status = status;
         if (search) {
@@ -47,6 +53,11 @@ export async function GET(req) {
 export async function POST(req) {
     try {
         await connectDB();
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        
         const body = await req.json();
         console.log("POST /api/ledger body:", JSON.stringify(body, null, 2));
 
@@ -55,6 +66,7 @@ export async function POST(req) {
         }
 
         const entry = await Ledger.create({
+            userId: session.user.id,
             title: body.title,
             amount: Number(body.amount),
             type: body.type,
@@ -75,6 +87,11 @@ export async function POST(req) {
 export async function PUT(req) {
     try {
         await connectDB();
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const body = await req.json();
         const { id, ...updateData } = body;
 
@@ -84,7 +101,7 @@ export async function PUT(req) {
 
         console.log(`PUT /api/ledger ID: ${id} Update:`, JSON.stringify(updateData, null, 2));
 
-        const entry = await Ledger.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+        const entry = await Ledger.findOneAndUpdate({ _id: id, userId: session.user.id }, updateData, { new: true, runValidators: true });
 
         if (!entry) {
             console.error(`Ledger entry not found for ID: ${id}`);
@@ -104,6 +121,11 @@ export async function PUT(req) {
 export async function DELETE(req) {
     try {
         await connectDB();
+        const session = await getServerSession(authOptions);
+        if (!session || !session.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
         const { searchParams } = new URL(req.url);
         const id = searchParams.get("id");
 
@@ -111,7 +133,10 @@ export async function DELETE(req) {
             return NextResponse.json({ error: "ID required" }, { status: 400 });
         }
 
-        await Ledger.findByIdAndDelete(id);
+        const deleted = await Ledger.findOneAndDelete({ _id: id, userId: session.user.id });
+        if (!deleted) {
+            return NextResponse.json({ error: "Entry not found or unauthorized" }, { status: 404 });
+        }
         return NextResponse.json({ message: "Deleted successfully" });
 
     } catch (err) {

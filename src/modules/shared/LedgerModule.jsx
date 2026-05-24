@@ -230,6 +230,13 @@ function AddEntryModal({ isOpen, onClose, onSubmit, isPayable, labels, isSubmitt
 export default function LedgerModule({ type }) {
     const isPayable = type === "payable";
 
+    // Swal theme constants for nested callbacks
+    const swalBg = useColorModeValue("#fff", "#111827");
+    const swalColor = useColorModeValue("#111827", "#fff");
+    const swalCancelBtnColor = useColorModeValue("#E5E7EB", "#374151");
+    const swalPopupClass = useColorModeValue("border-gray-200", "border-gray-700");
+    const swalInputClass = useColorModeValue("bg-gray-50 text-gray-900", "bg-gray-900 text-white");
+
     const labels = {
         title: isPayable ? "Payable" : "Receivable",
         subtitle: isPayable ? "Money you have to pay" : "Money you will receive",
@@ -249,8 +256,8 @@ export default function LedgerModule({ type }) {
             title: title,
             showConfirmButton: false,
             timer: 2000,
-            background: useColorModeValue("#fff", "#111827"),
-            color: useColorModeValue("#111827", "#fff"),
+            background: swalBg,
+            color: swalColor,
             didOpen: () => {
                 Swal.getContainer().style.zIndex = "2000";
             }
@@ -361,13 +368,13 @@ export default function LedgerModule({ type }) {
             },
             inputPlaceholder: 'Choose wallet...',
             showCancelButton: true,
-            background: useColorModeValue("#fff", "#111827"),
-            color: useColorModeValue("#111827", "#fff"),
+            background: swalBg,
+            color: swalColor,
             confirmButtonColor: labels.accentColor,
-            cancelButtonColor: useColorModeValue("#E5E7EB", "#374151"),
+            cancelButtonColor: swalCancelBtnColor,
             customClass: {
-                popup: `rounded-2xl border ${useColorModeValue("border-gray-200", "border-gray-700")} shadow-2xl`,
-                input: `${useColorModeValue("bg-gray-50 text-gray-900", "bg-gray-900 text-white")} border-gray-700`
+                popup: `rounded-2xl border ${swalPopupClass} shadow-2xl`,
+                input: `${swalInputClass} border-gray-700`
             },
             didOpen: () => {
                 Swal.getContainer().style.zIndex = "2000";
@@ -387,8 +394,8 @@ export default function LedgerModule({ type }) {
                             title: "Insufficient Balance!",
                             text: `You only have Rs. ${currentBalance.toLocaleString()} in your ${wallet} wallet. Cannot complete this payment.`,
                             icon: "warning",
-                            background: useColorModeValue("#fff", "#111827"),
-                            color: useColorModeValue("#111827", "#fff"),
+                            background: swalBg,
+                            color: swalColor,
                             confirmButtonColor: labels.accentColor,
                             didOpen: () => {
                                 Swal.getContainer().style.zIndex = "2000";
@@ -558,7 +565,7 @@ export default function LedgerModule({ type }) {
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </Flex>
-                    
+
                     {/* View Toggle Tabs */}
                     <Flex bg="cardBg" p={1} borderRadius="12px" border="1px solid" borderColor="mainBorder">
                         <Button
@@ -699,10 +706,10 @@ export default function LedgerModule({ type }) {
                                                     </Button>
                                                 ) : (
                                                     <Button
-                                                        size="sm" 
+                                                        size="sm"
                                                         bg={item.isAddedToTransactions ? "rgba(99,102,241,0.1)" : "rgba(250,204,21,0.1)"}
                                                         _hover={{ opacity: 0.8 }}
-                                                        color={item.isAddedToTransactions ? "#818CF8" : "#FACC15"} 
+                                                        color={item.isAddedToTransactions ? "#818CF8" : "#FACC15"}
                                                         border={item.isAddedToTransactions ? "1px solid rgba(99,102,241,0.3)" : "1px solid rgba(250,204,21,0.3)"}
                                                         borderRadius="8px"
                                                         onClick={() => !item.isAddedToTransactions && handleConvertToTransaction(item)}
